@@ -12,6 +12,7 @@ def affiche(x):
 
     return text
 
+
 # fonction permettant de crypter et decrypter une chaine de caracteres selon la methode de vignere
 # parametre:    message:    chaine de caractere a modifier
 #               cle:        chaine de caractere codant la modification
@@ -42,6 +43,7 @@ def vigenere(message, cle, mode='cryptage'):
         text += chr(valeur + 96)
     return text
 
+
 #fonction qui mappe les sequences de 3 ou plus caracteres d'une chaine de caracteres
 #et qui affiche les sequences qui revienne au moins une fois.
 #Retourne egalement la sequence avec le plus grand nombre d'occurence avec ce nombre et la chaine original
@@ -71,19 +73,20 @@ def occurence(texte):
     return [max_sequence, count_max, texte]
 
 
-def distance(occu):
-    position = []
-    distance = []
-    sequence = occu[0]
-    repetion = occu[1]
-    texte = occu[2]
-    start = 0
-    for i in range(repetion):
-        start = texte.find(sequence, start) + 1
-        position.append(start - 1)
+def distance(chaine):
+    sequence    = chaine[0]
+    repetion    = chaine[1]
+    texte       = chaine[2]
 
-    for i in range(len(position) - 1):
-        distance.append(position[i + 1] - position[i])
+    position = []
+    start = 0
+
+    for _ in range(repetion):
+        start = texte.find(sequence, start)
+        position.append(start)
+        start += 1
+
+    distance = [position[i + 1] - position[i] for i in range(len(position) - 1)]
 
     return distance
 
@@ -94,6 +97,7 @@ def longueur_cle(distance):
         pgcd = math.gcd(pgcd, i)
     return pgcd
 
+
 '''
 texte = affiche("Message")
 cle = affiche("cle")
@@ -102,4 +106,4 @@ decrypter = vigenere(crypter, cle, "decryptage")
 print("message crypter : {}\nmessage decrypter : {}".format(crypter, decrypter))
 '''
 occu = occurence("abcdefghijklmnopqrstuvwxyzabcdmnoabc")
-'''print(longueur_cle(distance(occu)))'''
+print(distance(occu))
