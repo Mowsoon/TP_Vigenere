@@ -1,9 +1,11 @@
 import math
+from collections import defaultdict
+
 
 # fonction permettant d'entrer une chaine de caracteres et de la mettre sous le format avec seulement des lettres en minuscule
 # parametre: X: permet d'adapter la phrase d'input
 def affiche(x):
-    text = input("Entrer votre {} : ".format(x))
+    text = input(f"Entrer votre {x} : ")
 
     #transforme la chaine de caracteres en gardant seulement les lettres en les mettants au format minuscule
     text = "".join([char for char in text.lower() if char.isalnum()])
@@ -40,34 +42,33 @@ def vigenere(message, cle, mode='cryptage'):
         text += chr(valeur + 96)
     return text
 
-
+#fonction qui mappe les sequences de 3 ou plus caracteres d'une chaine de caracteres
+#et qui affiche les sequences qui revienne au moins une fois.
+#Retourne egalement la sequence avec le plus grand nombre d'occurence avec ce nombre et la chaine original
 def occurence(texte):
-    occu = []
-    occurrences = {}
+    #initialisation du dictionnaire qui stocke les occurences de chaque sequences
+    occurences = defaultdict(int)
 
     longueur = len(texte)
-
+    #boucle qui trouve toutes les sequences et qui compte leurs occurences
     for i in range(longueur):
+        #j est initialise 3 caractere apres i et avance jusqu a la fin de la chaine
         for j in range(i + 3, longueur + 1):
+            #trouve la sequence qui comprend les caracteres entre i et j
             sequence = texte[i:j]
-            if sequence in occurrences:
-                occurrences[sequence] += 1
-            else:
-                occurrences[sequence] = 1
+            #incremente l'occurence de la sequence trouve
+            occurences[sequence] += 1
 
+    max_sequence = ""
     count_max = 0
-    for sequence, count in occurrences.items():
+    #boucle qui affiche les sequences avec plus que 1 occurences et trouve celle avec la plus grande
+    for sequence, count in occurences.items():
         if count > 1:
-            print("{} trouve {} fois".format(sequence, count))
+            print(f"{sequence} trouve {count} fois")
             if count_max < count:
+                max_sequence = sequence
                 count_max = count
-                if occu:
-                    occu.pop()
-                    occu.pop()
-                occu.append(sequence)
-                occu.append(count)
-    occu.append(texte)
-    return occu
+    return [max_sequence, count_max, texte]
 
 
 def distance(occu):
@@ -93,7 +94,7 @@ def longueur_cle(distance):
         pgcd = math.gcd(pgcd, i)
     return pgcd
 
-
+'''
 texte = affiche("Message")
 cle = affiche("cle")
 crypter = vigenere(texte, cle)
@@ -101,4 +102,4 @@ decrypter = vigenere(crypter, cle, "decryptage")
 print("message crypter : {}\nmessage decrypter : {}".format(crypter, decrypter))
 '''
 occu = occurence("abcdefghijklmnopqrstuvwxyzabcdmnoabc")
-print(longueur_cle(distance(occu)))'''
+'''print(longueur_cle(distance(occu)))'''
