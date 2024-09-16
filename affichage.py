@@ -1,9 +1,11 @@
 import math
 
-
+# fonction permettant d'entrer une chaine de caracteres et de la mettre sous le format avec seulement des lettres en minuscule
+# parametre: X: permet d'adapter la phrase d'input
 def affiche(x):
     text = input("Entrer votre {} : ".format(x))
 
+    #transforme la chaine de caracteres en gardant seulement les lettres en les mettants au format minuscule
     text = "".join([char for char in text.lower() if char.isalnum()])
 
     return text
