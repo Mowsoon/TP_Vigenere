@@ -8,47 +8,30 @@ def affiche(x):
 
     return text
 
-def cryptage(message, codage):
 
+def vigenere(message, cle, mode='cryptage'):
     text = ""
     j = 0
     for i in range(len(message)):
-        if j >= len(codage):
+        if j >= len(cle):
             j = 0
         lettre = ord(message[i]) - 96
-        cle = ord(codage[j]) - 96
-        valeur = lettre + cle
+        cle_val = ord(cle[j]) - 96
 
-        if valeur > 26:
-            valeur -= 26
+        if mode == "cryptage":
+            valeur = (lettre + cle_val - 1) % 26 + 1
+        if mode == "decryptage":
+            valeur = (lettre - cle_val - 1) % 26 + 1
 
         text += chr(valeur + 96)
-        j += 1
-
     return text
 
-def decryptage(message, codage):
-
-    text = ""
-    j = 0
-    for i in range(len(message)):
-        if j >= len(codage):
-            j = 0
-        lettre = ord(message[i]) - 96
-        cle = ord(codage[j]) - 96
-        valeur = lettre - cle
-        if valeur < 1:
-            valeur += 26
-        text += chr(valeur + 96)
-        j += 1
-    return text
 
 def occurence(texte):
     occu = []
     occurrences = {}
 
     longueur = len(texte)
-
 
     for i in range(longueur):
         for j in range(i + 3, longueur + 1):
@@ -64,13 +47,14 @@ def occurence(texte):
             print("{} trouve {} fois".format(sequence, count))
             if count_max < count:
                 count_max = count
-                if occu :
+                if occu:
                     occu.pop()
                     occu.pop()
                 occu.append(sequence)
                 occu.append(count)
     occu.append(texte)
     return occu
+
 
 def distance(occu):
     position = []
@@ -84,7 +68,7 @@ def distance(occu):
         position.append(start - 1)
 
     for i in range(len(position) - 1):
-        distance.append(position[i+1] - position[i])
+        distance.append(position[i + 1] - position[i])
 
     return distance
 
@@ -98,8 +82,8 @@ def longueur_cle(distance):
 
 texte = affiche("Message")
 cle = affiche("cle")
-crypter = cryptage(texte,cle)
-decrypter = decryptage(crypter,cle)
+crypter = vigenere(texte, cle)
+decrypter = vigenere(crypter, cle, "decryptage")
 print("message crypter : {}\nmessage decrypter : {}".format(crypter, decrypter))
 '''
 occu = occurence("abcdefghijklmnopqrstuvwxyzabcdmnoabc")
