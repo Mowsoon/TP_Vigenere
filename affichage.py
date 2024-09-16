@@ -72,7 +72,7 @@ def occurence(texte):
                 count_max = count
     return [max_sequence, count_max, texte]
 
-
+# fonction qui permet de trouver les distances entre chaque occurences d'une sequence sur une chaine de caracteres
 def distance(chaine):
     sequence    = chaine[0]
     repetion    = chaine[1]
@@ -80,12 +80,15 @@ def distance(chaine):
 
     position = []
     start = 0
-
+    #boucle qui trouve les positions de chaque occurences de la sequences
     for _ in range(repetion):
+        #actualisation du start pour trouver la prochaine occurence
         start = texte.find(sequence, start)
         position.append(start)
+        #incrementation pour eviter la repetition d'occurence
         start += 1
 
+    #calcul les distances entre chaque position
     distance = [position[i + 1] - position[i] for i in range(len(position) - 1)]
 
     return distance
