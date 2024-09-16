@@ -10,21 +10,33 @@ def affiche(x):
 
     return text
 
-
+# fonction permettant de crypter et decrypter une chaine de caracteres selon la methode de vignere
+# parametre:    message:    chaine de caractere a modifier
+#               cle:        chaine de caractere codant la modification
+#               mode:       parametre optionnel permettant de choisir si on veut crypter ou decrypter, automatiquement en cypter
 def vigenere(message, cle, mode='cryptage'):
     text = ""
+
+    #initialisation du compteur pour la cle
     j = 0
+
+    #boucle permettant de modifier chaque caractere un par un
     for i in range(len(message)):
+        #si le compteur de la cle depace la cle il est reinitialise
         if j >= len(cle):
             j = 0
+
+        #recupere la valeur unicode des caracteres actuels et enleve la valeur de 'a' pour avoir la valeur dans l'alphabet
         lettre = ord(message[i]) - 96
         cle_val = ord(cle[j]) - 96
 
+        #Si on crypte on avance la lettre de la valeur de la cle, sinon on recule
         if mode == "cryptage":
             valeur = (lettre + cle_val - 1) % 26 + 1
         if mode == "decryptage":
             valeur = (lettre - cle_val - 1) % 26 + 1
 
+        #Le caractere trouver est remis sous code Unicode et remis sous format de lettre puis ajouter a le chaine de resultat
         text += chr(valeur + 96)
     return text
 
