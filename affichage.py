@@ -100,21 +100,25 @@ def distance(chaine):
     return distances
 
 
-#fonction permettant de calculer le pgcd des distances
+#fonction permettant de calculer tous les diviseurs communs des distances
 def longueur_cle(distances):
     if not distances: return []
-
+    #calcul tous les diviseurs de la premiere distance
     diviseurs_commun = liste_diviseurs(distances[0])
 
+    #boucle qui calcul les diviseurs de chaque distance et fais l'intersection avec les precedantes
     for d in distances[1:]:
         diviseurs_commun &= liste_diviseurs(d)
 
     return sorted(diviseurs_commun)
 
 
+#fonction permettant de calculer les diviseurs d'une valeur
 def liste_diviseurs(n):
     diviseurs = set()
+    #boucle de 1 jusqu'a la racine de la valeur
     for i in range(1, int(math.sqrt(n))+1):
+        #si un diviseur est trouver l'ajoute ainsi que son oppose par rapport a la valeur si ce n'est pas lui meme
         if n%i==0:
             diviseurs.add(i)
             if i != n//i:
@@ -137,10 +141,10 @@ dist = distance(occu)
 print(f"La distance entre chaque occurences est de {dist}\n")
 
 longueur = longueur_cle(dist)
-
+print(f"la taille de la cle est {len(cle)}")
 
 if len(cle) in longueur:
     print(f"Gagne la longueur de la cle est bien dans {longueur}")
 
 else:
-    print(f"Perdu la cle est {len(cle)} et n'est pas dans {longueur}")
+    print(f"Perdu la cle n'est pas dans {longueur}")
