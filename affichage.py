@@ -30,13 +30,15 @@ def vigenere(message, cle, mode='cryptage'):
 
     #boucle permettant de modifier chaque caractere un par un
     for i in range(len(message)):
-        #si le compteur de la cle depace la cle il est reinitialise
+        #si le compteur de la cle deplace la cle il est reinitialise
         if j >= len(cle):
             j = 0
 
         #recupere la valeur unicode des caracteres actuels et enleve la valeur de 'a' pour avoir la valeur dans l'alphabet
         lettre = ord(message[i]) - ord('a')
         cle_val = ord(cle[j]) - ord('a')
+        print("lettre et cle")
+        print(lettre, cle_val)
 
         #Si on crypte on avance la lettre de la valeur de la cle, sinon on recule
         if mode == "cryptage":
@@ -125,13 +127,48 @@ def liste_diviseurs(n):
                 diviseurs.add(n//i)
     return diviseurs
 
+def proportion_lettre_dans_texte(texte):
+    # Initialiser un tableau de 26 valeurs à 0 (une pour chaque lettre de l'alphabet)
+    lettres = [0] * 26
 
-texte = format("Avoir paramétré une clé SSH au préalable.Dans GitHub copier le lien SSH dans Code.Dans le terminale se placer dans le répertoire ou l'on veut mettre le projet. Taper git clone le lien coller (nouveau nom de dossier optionnel).")
-cle = format("ilyasganboldthomasalban")
+    # Parcourir chaque caractère du texte
+    for char in texte:
+        # Vérifier si le caractère est une lettre minuscule
+        if 'a' <= char <= 'z':
+            # Convertir la lettre en indice (0 pour 'a', 1 pour 'b', etc.)
+            index = ord(char) - ord('a')
+            # Incrémenter l'indice correspondant dans le tableau
+            lettres[index] += 1
+    for lettre in range(26):
+        lettres[lettre] /= len(texte)
+        lettres[lettre] *= 100
+    return lettres
+
+
+# Calcul de la probabilité qu'une lettre soit choisie deux fois
+def prob_lettres_identiques(pourcentages, taille_texte):
+    prob_identique = 0
+    for p in pourcentages:
+        p = p/100
+        nombre_lettre = p * taille_texte
+        prob_lettre = (nombre_lettre*(nombre_lettre-1))/(taille_texte * (taille_texte-1))
+        prob_identique += prob_lettre
+    return prob_identique
+
+def proba_lettres_identiques_dans_texte(texte):
+    proportion = proportion_lettre_dans_texte(texte)
+    print(f"La probabilité de trouver 2 fois la meme lettre de maniere aleatoire dans ce texte est :\n{prob_lettres_identiques(proportion, len(texte))}")
+
+
+"""
+texte = format(" la cle s’affiche a partir de la bonne position")
+cle = format("test")
 
 
 crypter = vigenere(texte, cle)
 print(f"Le message crypter est : \n{crypter}")
+decrypter = vigenere(crypter, cle,"decryptage")
+print(f"Le message decrypter est : \n{decrypter}")
 
 occu = occurence(crypter)
 print(f"La sequence la plus recurente est : {occu[0]} avec {occu[1]} occurences")
@@ -148,3 +185,30 @@ if len(cle) in longueur:
 
 else:
     print(f"Perdu la cle n'est pas dans {longueur}")
+"""
+
+
+
+proportion_identique_de_lettres = []
+for i in range (26):
+    proportion_identique_de_lettres.append(100/26)
+
+
+pourcentages_lettres_en = [8.17, 1.49, 2.78, 4.25, 12.70, 2.23, 2.02, 6.09, 6.97, 0.15,
+                           0.77, 4.03, 2.41, 6.75, 7.51, 1.93, 0.10, 5.99, 6.33, 9.06,
+                           2.76, 0.98, 2.36, 0.15, 1.97, 0.07]
+
+pourcentages_lettres_fr = [7.64, 0.89, 3.26, 3.67, 14.72, 1.06, 0.87, 0.74, 7.53, 0.61,
+                           0.05, 5.46, 2.97, 7.10, 5.79, 2.52, 1.36, 6.69, 7.95, 7.24,
+                           6.31, 1.83, 0.05, 0.30, 0.24, 0.32]
+
+taille_texte = 100000000000000000000000000
+
+print(f"Pour un texte de taille {taille_texte} la probabilité de tomber deux fois sur la même lettre de maniere aléatoire est:")
+print(f"Pour un texte générer avec le meme nombre de chaque lettre :\n{prob_lettres_identiques(proportion_identique_de_lettres, taille_texte)}")
+print(f"Pour un texte francais :\n{prob_lettres_identiques(pourcentages_lettres_fr, taille_texte)}")
+print(f"Pour un texte anglais :\n{prob_lettres_identiques(pourcentages_lettres_en,taille_texte)}\n")
+
+
+texte = format("azertyuiopqsdfghjklmwxcvbnazertyuiopqsdfghjklmwxcvbn")
+proba_lettres_identiques_dans_texte(texte)
