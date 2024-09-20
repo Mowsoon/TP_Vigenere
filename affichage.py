@@ -12,6 +12,7 @@ def affiche(x):
 
     return text
 
+#fonction identique a affiche mais faire pour les tests avec la chaine directement en parametre
 def format(text):
     text = "".join([char for char in text.lower() if char.isalnum()])
 
