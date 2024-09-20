@@ -104,7 +104,7 @@ def distance(chaine):
 
 
 #fonction permettant de calculer tous les diviseurs communs des distances
-def longueur_cle(distances):
+def liste_diviseurs_commun(distances):
     if not distances: return []
     #calcul tous les diviseurs de la premiere distance
     diviseurs_commun = liste_diviseurs(distances[0])
@@ -127,6 +127,9 @@ def liste_diviseurs(n):
             if i != n//i:
                 diviseurs.add(n//i)
     return diviseurs
+
+def methodeBabbageKasiki(texte) :
+        return liste_diviseurs_commun(distance(occurence(texte)))
 
 
 #fonction qui renvoie un tableau des lettres de l'alphabet en minuscule ou la valeur du tableau est le pourcentage
@@ -169,9 +172,9 @@ def trouverDeuxLettres(texte):
     print(f"La probabilité de trouver 2 lettres identiques de maniere aleatoire dans ce texte est :\n{deuxLettresIdentiques(proportion, len(texte))}")
 
 
-"""
-texte = format(" la cle s’affiche a partir de la bonne position")
-cle = format("test")
+
+texte = format("the russe the jasmin")
+cle = format("kilo")
 
 
 crypter = vigenere(texte, cle)
@@ -179,23 +182,17 @@ print(f"Le message crypter est : \n{crypter}")
 decrypter = vigenere(crypter, cle,"decryptage")
 print(f"Le message decrypter est : \n{decrypter}")
 
-occu = occurence(crypter)
-print(f"La sequence la plus recurente est : {occu[0]} avec {occu[1]} occurences")
 
 
-dist = distance(occu)
-print(f"La distance entre chaque occurences est de {dist}\n")
-
-longueur = longueur_cle(dist)
-print(f"la taille de la cle est {len(cle)}")
+longueur = methodeBabbageKasiki(texte)
 
 if len(cle) in longueur:
-    print(f"Gagne la longueur de la cle est bien dans {longueur}")
+    print(f"Gagne la longueur de la cle est bien dans l'ensemble {longueur}")
 
 else:
-    print(f"Perdu la cle n'est pas dans {longueur}")
-"""
+    print(f"Perdu la cle n'est pas dans l'ensemble {longueur}")
 
+print("\n-----------------------------------------------\n")
 
 
 proportion_identique_de_lettres = []
@@ -214,9 +211,9 @@ pourcentages_lettres_fr = [7.636, 0.901, 3.26, 3.669, 14.715, 1.066, 0.866, 0.73
 taille_texte = 10000000000000000000000000000
 
 print(f"Pour un texte de taille {taille_texte} la probabilité de tomber deux fois sur la même lettre de maniere aléatoire est:")
-print(f"Pour un texte générer avec le meme nombre de chaque lettre :\n{deuxLettresIdentiques(proportion_identique_de_lettres, taille_texte)}")
-print(f"Pour un texte francais :\n{deuxLettresIdentiques(pourcentages_lettres_fr, taille_texte)}")
-print(f"Pour un texte anglais :\n{deuxLettresIdentiques(pourcentages_lettres_en, taille_texte)}\n")
+print(f"Pour un texte générer avec le meme nombre de chaque lettre:\n{deuxLettresIdentiques(proportion_identique_de_lettres, taille_texte)}")
+print(f"Pour un texte francais:\n{deuxLettresIdentiques(pourcentages_lettres_fr, taille_texte)}")
+print(f"Pour un texte anglais:\n{deuxLettresIdentiques(pourcentages_lettres_en, taille_texte)}\n")
 
 
 texte = format("azertyuiopqsdfghjklmwxcvbnazertyuiopqsdfghjklmwxcvbn")
