@@ -38,7 +38,7 @@ def vigenere(message, cle, mode='cryptage'):
         #recupere la valeur unicode des caracteres actuels et enleve la valeur de 'a' pour avoir la valeur dans l'alphabet
         lettre = ord(message[i]) - ord('a')
         cle_val = ord(cle[j]) - ord('a')
-    
+
 
         #Si on crypte on avance la lettre de la valeur de la cle, sinon on recule
         if mode == "cryptage":
@@ -81,6 +81,7 @@ def occurence(texte):
     return [max_sequence, count_max, texte]
 
 # fonction qui permet de trouver les distances entre chaque occurences d'une sequence sur une chaine de caracteres
+# prend en parametre une liste qui a en premier element la sequence, en deuxieme son nombre d'occurence et enfin la chaine de caracteres
 def distance(chaine):
     sequence    = chaine[0]
     repetion    = chaine[1]
