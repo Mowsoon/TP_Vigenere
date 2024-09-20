@@ -38,8 +38,7 @@ def vigenere(message, cle, mode='cryptage'):
         #recupere la valeur unicode des caracteres actuels et enleve la valeur de 'a' pour avoir la valeur dans l'alphabet
         lettre = ord(message[i]) - ord('a')
         cle_val = ord(cle[j]) - ord('a')
-        print("lettre et cle")
-        print(lettre, cle_val)
+    
 
         #Si on crypte on avance la lettre de la valeur de la cle, sinon on recule
         if mode == "cryptage":
