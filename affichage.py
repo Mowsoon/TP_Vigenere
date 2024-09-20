@@ -91,10 +91,10 @@ def distance(chaine):
     start = 0
     #boucle qui trouve les positions de chaque occurences de la sequences
     for _ in range(repetion):
-        #actualisation du start pour trouver la prochaine occurence
+        #actualisation du start a la prochaine occurence
         start = texte.find(sequence, start)
         position.append(start)
-        #incrementation pour eviter la repetition d'occurence
+        #incrementation pour eviter la repetition de meme occurence
         start += 1
 
     #calcul les distances entre chaque position
@@ -128,37 +128,45 @@ def liste_diviseurs(n):
                 diviseurs.add(n//i)
     return diviseurs
 
-def proportion_lettre_dans_texte(texte):
-    # Initialiser un tableau de 26 valeurs à 0 (une pour chaque lettre de l'alphabet)
-    lettres = [0] * 26
 
-    # Parcourir chaque caractère du texte
+#fonction qui renvoie un tableau des lettres de l'alphabet en minuscule ou la valeur du tableau est le pourcentage
+#de presence de la lettre dans le texte
+def pourcentageLettres(texte):
+    #tableau de 26 valeurs (une pour chaque lettre de l'alphabet)
+    lettres = [0] * 26
+    
+    #parcours chaque caractère du texte et incremente la case de la lettre corespondant a chaque caractere
     for char in texte:
-        # Vérifier si le caractère est une lettre minuscule
-        if 'a' <= char <= 'z':
-            # Convertir la lettre en indice (0 pour 'a', 1 pour 'b', etc.)
-            index = ord(char) - ord('a')
-            # Incrémenter l'indice correspondant dans le tableau
-            lettres[index] += 1
-    for lettre in range(26):
+        index = ord(char) - ord('a')
+        lettres[index] += 1
+        
+    #divise par la taille du texte et multiplie par 100 chaque case pour avoir le pourcentage     
+    for lettre in range(26):     
         lettres[lettre] /= len(texte)
         lettres[lettre] *= 100
     return lettres
 
 
-# Calcul de la probabilité qu'une lettre soit choisie deux fois
-def prob_lettres_identiques(pourcentages, taille_texte):
+# Calcul de la probabilite que si on choisi deux lettres au hazard, elle soit identique
+# prend en parametre le pourcentages de presence de chaque lettres ainsi que la taille du texte
+def deuxLettresIdentiques(pourcentages, taille_texte):
     prob_identique = 0
+    #calcul la probabilte pour chaque lettre
     for p in pourcentages:
+        #met le pourcentage en format de probabilites et trouve le nombre de lettre presente dans le texte
         p = p/100
         nombre_lettre = p * taille_texte
+        
+        #trouve la probabilite que la lettre actuel soit celle que l'on est trouve deux fois
         prob_lettre = (nombre_lettre*(nombre_lettre-1))/(taille_texte * (taille_texte-1))
+        #incremente la probabilite de trouver n'importe quelle lettre 2 fois
         prob_identique += prob_lettre
     return prob_identique
 
-def proba_lettres_identiques_dans_texte(texte):
-    proportion = proportion_lettre_dans_texte(texte)
-    print(f"La probabilité de trouver 2 fois la meme lettre de maniere aleatoire dans ce texte est :\n{prob_lettres_identiques(proportion, len(texte))}")
+#fonction permettant de prendre un texte et calculer la probabilite que si 2 lettres soit choisi aleatoirement, elles soient les memes
+def trouverDeuxLettres(texte):
+    proportion = pourcentageLettres(texte)
+    print(f"La probabilité de trouver 2 lettres identiques de maniere aleatoire dans ce texte est :\n{deuxLettresIdentiques(proportion, len(texte))}")
 
 
 """
@@ -191,25 +199,25 @@ else:
 
 
 proportion_identique_de_lettres = []
-for i in range (26):
+for i in range(26):
     proportion_identique_de_lettres.append(100/26)
 
+#frequence de chaque lettres en anglais et francais. Source : Wikipedia
+pourcentages_lettres_en = [8.167, 1.492, 2.782, 4.253, 12.702, 2.228, 2.015, 6.094, 6.966, 0.153,
+                           0.772, 4.025, 2.406, 6.749, 7.507, 1.929, 0.095, 5.987, 6.327, 9.056,
+                           2.758, 0.978, 2.360, 0.150, 1.974, 0.074]
 
-pourcentages_lettres_en = [8.17, 1.49, 2.78, 4.25, 12.70, 2.23, 2.02, 6.09, 6.97, 0.15,
-                           0.77, 4.03, 2.41, 6.75, 7.51, 1.93, 0.10, 5.99, 6.33, 9.06,
-                           2.76, 0.98, 2.36, 0.15, 1.97, 0.07]
+pourcentages_lettres_fr = [7.636, 0.901, 3.26, 3.669, 14.715, 1.066, 0.866, 0.737, 7.529, 0.613,
+                           0.074, 5.456, 2.968, 7.095, 5.796, 2.521, 1.362, 6.693, 7.948, 7.244,
+                           6.311, 1.838, 0.049, 0.427, 0.128, 0.326]
 
-pourcentages_lettres_fr = [7.64, 0.89, 3.26, 3.67, 14.72, 1.06, 0.87, 0.74, 7.53, 0.61,
-                           0.05, 5.46, 2.97, 7.10, 5.79, 2.52, 1.36, 6.69, 7.95, 7.24,
-                           6.31, 1.83, 0.05, 0.30, 0.24, 0.32]
-
-taille_texte = 100000000000000000000000000
+taille_texte = 10000000000000000000000000000
 
 print(f"Pour un texte de taille {taille_texte} la probabilité de tomber deux fois sur la même lettre de maniere aléatoire est:")
-print(f"Pour un texte générer avec le meme nombre de chaque lettre :\n{prob_lettres_identiques(proportion_identique_de_lettres, taille_texte)}")
-print(f"Pour un texte francais :\n{prob_lettres_identiques(pourcentages_lettres_fr, taille_texte)}")
-print(f"Pour un texte anglais :\n{prob_lettres_identiques(pourcentages_lettres_en,taille_texte)}\n")
+print(f"Pour un texte générer avec le meme nombre de chaque lettre :\n{deuxLettresIdentiques(proportion_identique_de_lettres, taille_texte)}")
+print(f"Pour un texte francais :\n{deuxLettresIdentiques(pourcentages_lettres_fr, taille_texte)}")
+print(f"Pour un texte anglais :\n{deuxLettresIdentiques(pourcentages_lettres_en, taille_texte)}\n")
 
 
 texte = format("azertyuiopqsdfghjklmwxcvbnazertyuiopqsdfghjklmwxcvbn")
-proba_lettres_identiques_dans_texte(texte)
+trouverDeuxLettres(texte)
