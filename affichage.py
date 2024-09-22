@@ -2,7 +2,7 @@ import math
 import random
 import string
 from collections import defaultdict
-
+from collections import Counter
 
 # fonction permettant d'entrer une chaine de caracteres et de la mettre sous le format avec seulement des lettres en minuscule
 # parametre: X: permet d'adapter la phrase d'input
@@ -52,7 +52,6 @@ def vigenere(message, cle, mode='cryptage'):
         text += chr(valeur + ord('a'))
         j += 1
     return text
-
 
 #fonction qui mappe les sequences de 3 ou plus caracteres d'une chaine de caracteres
 #et qui affiche les sequences qui revienne au moins une fois.
@@ -156,20 +155,15 @@ def generer_proportion_francaise():
 
 
 #fonction qui renvoie un tableau des lettres de l'alphabet en minuscule ou la valeur du tableau est le pourcentage
-#de presence de la lettre dans le texte
+#de presence de chaque lettres dans le texte
 def pourcentageLettres(texte):
-    #tableau de 26 valeurs (une pour chaque lettre de l'alphabet)
     lettres = [0] * 26
+    compteur_lettres = Counter(texte)
+    total_lettres = len(texte)
 
-    #parcours chaque caractère du texte et incremente la case de la lettre corespondant a chaque caractere
-    for char in texte:
-        index = ord(char) - ord('a')
-        lettres[index] += 1
-
-    #divise par la taille du texte et multiplie par 100 chaque case pour avoir le pourcentage
-    for lettre in range(26):
-        lettres[lettre] /= len(texte)
-        lettres[lettre] *= 100
+    for lettre in compteur_lettres:
+        index = ord(lettre) - ord('a')
+        lettres[index] = (compteur_lettres[lettre] / total_lettres) * 100 if total_lettres > 0 else 0
     return lettres
 
 
@@ -219,11 +213,23 @@ def friedman(texte_crypter, langue="fr"):
     if Ke == K: return 1
     return round((Ke - Kr) / (K - Kr))
 
+#permet d'estimer la cle en connaissant sa taille et en fonction de l'analyse frequentielle
+def trouverCle(texte_crypter, taille_cle):
+    segments = [''] * taille_cle
+    estimation = ""
 
+    for i in range(len(texte_crypter)):
+        segments[i % taille_cle] += texte_crypter[i]
 
+    for segment in segments:
+        frequence = pourcentageLettres(segment)
+        indiceMaxFrequence = frequence.index(max(frequence))
+        #en sachant que e est la lettre la plus presente on estime que le decalage de la cle est (l'indice de la lettre la plus présente)-(l'indice de e)
+        decalage = (indiceMaxFrequence - (ord('e') - ord('a'))) % 26
+        estimation += chr(decalage + ord('a'))
+    return estimation
 
-
-
+#analyse la frequence des lettres dans un segment
 
 #-----------------------test------------------------------------------------
 #initialisation du message et son cryptage en vigenere
@@ -276,10 +282,10 @@ print(f"Pour un texte de taille {taille_texte} la probabilité de tomber deux fo
 #mais generer une grande chaine de carateres ainsi est couteux en mémoire.
 texte_aleatoire = generer_chaine_aleatoire(taille_texte)
 print(f"Pour un texte avec des proportions completements aleatoire:\n{trouverDeuxLettres(texte_aleatoire)}")
-
-
-
 print(f"Pour un texte générer avec le meme nombre de chaque lettre:\n{deuxLettresIdentiques(proportion_identique_de_lettres, taille_texte)}")
+
+
+
 print(f"Pour un texte francais:\n{deuxLettresIdentiques(pourcentages_lettres_fr, taille_texte)}")
 print(f"Pour un texte anglais:\n{deuxLettresIdentiques(pourcentages_lettres_en, taille_texte)}\n")
 """
@@ -292,6 +298,7 @@ taille_trouver = friedman(crypter)
 
 if len(cle) == taille_trouver:
     print(f"Gagne la longueur de la cle est bien {taille_trouver}")
+    print(f"La cle est estimer etre {trouverCle(crypter,taille_trouver)}")
 
 else:
     print(f"Perdu la cle n'est pas {taille_trouver}")
