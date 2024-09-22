@@ -229,7 +229,6 @@ def trouverCle(texte_crypter, taille_cle):
         estimation += chr(decalage + ord('a'))
     return estimation
 
-#analyse la frequence des lettres dans un segment
 
 #-----------------------test------------------------------------------------
 #initialisation du message et son cryptage en vigenere
