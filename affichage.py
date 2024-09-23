@@ -227,9 +227,11 @@ def trouverCle(texte_crypter, taille_cle):
         #en sachant que e est la lettre la plus presente on estime que le decalage de la cle est (l'indice de la lettre la plus présente)-(l'indice de e)
         decalage = (indiceMaxFrequence - (ord('e') - ord('a'))) % 26
         estimation += chr(decalage + ord('a'))
-    return estimation
-
-
+    #verification que la cle est valide
+    if vigenere(vigenere(texte_crypter, estimation),estimation, mode='decryptage') == texte_crypter:
+        return estimation
+    print("Echec dans la recherche de la cle")
+    return None
 
 def repetition(text, min_length=2):
     longest_sequence = ""
@@ -282,28 +284,31 @@ def bazeries_boucle (texte_chiffre, mot_probable):
     print(cle_probable)
     return(cle_probable)
 
-
 #-----------------------test------------------------------------------------
-
 #initialisation du message et son cryptage en vigenere
-texte = format("Dans un petit village niché au cœur des montagnes, une légende circulait depuis des générations. Elle parlait d'une grotte secrète, cachée au sommet du plus haut pic, qui renfermait des trésors oubliés depuis des siècles. Les anciens disaient que seuls les plus braves et les plus purs de cœur pouvaient espérer atteindre cette grotte, car le chemin était périlleux, semé d'embûches, et gardé par des créatures mysterieuses. Beaucoup avaient tenté l'aventure, mais aucun n'en était jamais revenu. Les habitants du village vivaient paisiblement, bercés par les récits des anciens, sans vraiment croire qu'un jour quelqu'un pourrait découvrir le secret de la montagne. Pourtant, un jour, un jeune homme du nom d'Élias, intrépide et curieux, décida de braver l'interdit. Depuis son enfance, il avait entendu parler de la légende et, malgré les avertissements de ses parents et des anciens du village, il sentait en lui un appel irrésistible à partir à la découverte de cette grotte mythique. Équipé d'un simple sac à dos, de provisions et d'une vieille carte transmise de génération en génération, Élias entreprit son voyage. Les premiers jours de marche furent relativement faciles, les sentiers étaient bien tracés et il pouvait encore apercevoir le village en contrebas à mesure qu'il montait. Mais plus il s'enfonçait dans la montagne, plus le paysage devenait hostile. Les arbres se raréfiaient, remplacés par des rochers escarpés et des falaises vertigineuses. Le vent soufflait avec une intensité grandissante, rendant chaque pas plus difficile. Pourtant, Élias continuait d'avancer, déterminé à percer le mystère. Au bout de quelques jours, il atteignit une partie du chemin que personne dans le village n'avait jamais évoquée. Un épais brouillard entourait les lieux, et une étrange sensation de malaise s'empara de lui. C'était comme si la montagne elle-même cherchait à le dissuader de continuer. Mais Élias, fort de sa détermination, refusa de faire demi-tour. Il savait qu'il était proche. Le soir venu, alors qu'il s'apprêtait à monter son camp pour la nuit, il entendit un bruit sourd résonner au loin. Intrigué, il suivit le son jusqu'à une petite crevasse dissimulée entre deux rochers. Là, il découvrit une entrée secrète, à peine visible sous les ombres du crépuscule. Sans hésiter, il s'y engouffra. À l'intérieur, il fut accueilli par un silence pesant et une obscurité totale. Il alluma sa lampe et progressa lentement à travers les étroits passages de la grotte. Les murs étaient ornés de gravures anciennes, retraçant des histoires de batailles, de royaumes disparus et de créatures légendaires. Plus il avançait, plus il se rendait compte que cette grotte n'était pas simplement un abri naturel, mais un lieu de grande importance pour une civilisation oubliée. Au bout de ce qui lui sembla être des heures, Élias déboucha dans une immense cavité. Devant lui, se dressait un gigantesque autel de pierre, sur lequel reposait un coffre en or massif, incrusté de pierres précieuses. Le cœur battant, il s'approcha lentement du coffre. Mais au moment où il tendit la main pour l'ouvrir, un grondement sourd fit trembler la grotte. Des ombres se mirent à bouger autour de lui, et il se retrouva face à face avec une créature gigantesque, mi-humaine, mi-féline, dont les yeux luisaient dans l'obscurité. 'Qui ose troubler le repos des anciens ?' gronda la créature d'une voix profonde. Pris de panique, Élias recula, mais quelque chose en lui l'empêchait de fuir. Il se redressa et, rassemblant tout son courage, il répondit : 'Je suis Élias, venu en quête de vérité, et non de trésors. Si je suis ici, c'est pour comprendre les mystères de cette montagne et honorer ceux qui y ont vécu avant nous.' La créature le fixa longuement, comme si elle sondait son âme. Puis, lentement, elle s'écarta, laissant le chemin libre vers le coffre. Élias, surpris mais soulagé, s'avança de nouveau. Lorsqu'il ouvrit le coffre, il ne trouva pas d'or, ni de bijoux, mais des parchemins anciens, contenant des écrits oubliés, des connaissances perdues sur le monde, la nature, et les secrets de la vie elle-même. Élias comprit alors que la véritable richesse ne résidait pas dans les biens matériels, mais dans la connaissance et la sagesse. Il quitta la grotte avec les parchemins, déterminé à les partager avec son village et à changer la façon dont ses habitants voyaient le monde. À son retour, il fut accueilli en héros. Non seulement il avait survécu à l'aventure, mais il apportait avec lui un savoir inestimable, capable de transformer leur vie à jamais. La légende de la montagne ne serait plus jamais perçue comme un simple conte, mais comme une vérité profonde sur la quête de soi et la valeur de la connaissance.")
-cle = format("alban")
+texte = format("ceci est un texte exemple qui fait plaisir a la famille")
+cle = format("test de cle")
 
-print(bazeries_boucle(vigenere(texte, cle), "mysterieuse"))
 
 """
 #pour entrer le message et la cle avec le terminal
 texte = affiche("message")
 cle = affiche("cle")
 """
+
+
+
+
+""""
 crypter = vigenere(texte, cle)
-print(trouverCle(crypter, len(cle)))
-
-
-
-
-#test pour le cryptage et decryptage
+cle_possible = trouverCle(crypter, len(cle))
+print(cle_possible)
+print(vigenere(crypter, cle_possible, mode="decryptage"))
 """
+
+"""
+#test pour le cryptage et decryptage
+
 print(f"Le message crypter est : \n{crypter}")
 decrypter = vigenere(crypter, cle,"decryptage")
 print(f"Le message decrypter est : \n{decrypter}")
@@ -348,7 +353,7 @@ print(f"Pour un texte anglais:\n{deuxLettresIdentiques(pourcentages_lettres_en, 
 
 
 
-
+"""
 #test de la methode de friedman
 taille_trouver = friedman(crypter)
 
@@ -359,3 +364,4 @@ if len(cle) == taille_trouver:
 else:
     print(f"Perdu la cle n'est pas {taille_trouver}")
 
+"""
