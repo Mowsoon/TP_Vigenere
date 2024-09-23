@@ -233,8 +233,56 @@ def trouverCle(texte_crypter, taille_cle):
     print("Echec dans la recherche de la cle")
     return None
 
+def repetition(text, min_length=2):
+    longest_sequence = ""
+
+    # Parcourir le texte pour trouver les sous-chaînes de longueur >= min_length
+    for length in range(min_length, len(text)//2 + 1):
+        seen = {}
+        for i in range(len(text) - length + 1):
+            sequence = text[i:i+length]
+            if sequence in seen:
+                seen[sequence] += 1
+            else:
+                seen[sequence] = 1
+
+        # Vérifier s'il y a une séquence répétée plus longue que celle déjà trouvée
+        for seq, count in seen.items():
+            if count > 1 and len(seq) > len(longest_sequence):
+                longest_sequence = seq
+
+    return longest_sequence
 
 
+#il faut que le mot probable soit plus grand
+def bazeries(texte_chiffre, mot_probable, position):
+    dechiffre = ""
+    for i in range (0, len(mot_probable)):
+        lettre = ord(texte_chiffre[i+position]) - ord('a')
+        lettre_clair = ord(mot_probable[i]) - ord('a')
+
+        valeur = (lettre - lettre_clair) % 26
+
+        dechiffre += chr(valeur + ord('a'))
+
+
+    cles_repet = repetition((dechiffre))
+    return cles_repet
+
+
+def bazeries_boucle (texte_chiffre, mot_probable):
+
+    cle_probable = []
+
+    for i in range (0, len(texte_chiffre)-len(mot_probable)):
+        tmp = bazeries(texte_chiffre, mot_probable, i)
+        if tmp != "" and tmp not in cle_probable:
+            cle_probable.append(tmp)
+
+        tmp = ""
+
+    print(cle_probable)
+    return(cle_probable)
 
 #-----------------------test------------------------------------------------
 #initialisation du message et son cryptage en vigenere
