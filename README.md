@@ -1,23 +1,33 @@
 # TP_Vigenere
-**Exercice 13 : Pourquoi le test de Friedman peut-il échouer ?**
+
+### **Exercice 8 : Enlever les répétions peu probable:**
+
+Puisque la méthode de Babbage et Kasiki calcul la taille de la clé en fonction des répétitions d'occurence, si ces répétitions ne pas très communes elles ont la possibilités de fausser le résultat et de nous empecher de trouver la clé car on ne trouve pas de diviseurs communs car certaine répétitions seraient dû au hazard et non à une répétition de la clé sur la même séquence:
+
+- On peut donc enlever les séquences avec des occurences bien plus faible que la moyenne et ainsi seulement garder les plus grandes récurences qui on une probabilité de correspondre au répétition de la clé plus élevé.
+
+
+- Dans cette logique on peut même seulement garder la séquence avec le plus d'occurence car elle est celle qui a les plus grandes chance de correspondre aux répétitions de la clé tout en ayant l'option qui réduit le plus les chances de ne pas trouver de diviseurs commun.
+
+
+   
+
+
+
+
+
+### **Exercice 13 : Pourquoi le test de Friedman peut-il échouer ?**
 
 Le test de Friedman pour estimer la longueur de la clé L repose sur des hypothèses qui peuvent ne pas toujours être valides dans des situations réelles. Voici plusieurs raisons qui peuvent expliquer l'échec du test :
 
-1. **Hypothèses sur la distribution des lettres :**
-    - Le test suppose que les lettres d'un texte clair suivent une distribution statistique classique (comme celle de la langue française ou anglaise). Cependant, si le texte clair n'a pas une longueur suffisante ou ne suit pas cette distribution typique, le test peut échouer.
-    - Par exemple, si le texte est très court, le biais statistique peut rendre la méthode imprécise car il y a trop peu d'échantillons pour estimer correctement les fréquences des lettres.
+### La taille du texte:
 
-2. **Hypothèses sur la structure de la clé :**
-    - Le test suppose que chaque lettre de la clé agit indépendamment des autres, ce qui n'est pas toujours vrai. Si la clé présente des motifs récurrents ou une certaine structure, cela peut fausser les résultats.
-    - Si la clé est trop courte ou trop répétitive, cela peut donner des résultats erronés.
+- Le test suppose que les lettres du texte clair suivent une distribution classique de leur langue, hors si le texte n'est pas assez long il ne sera pas fidèle à ses proportions, où si le texte possède une distribution insolite alors le test ne fonctionera pas.
 
-3. **Sensibilité aux petites valeurs de L :**
-    - Lorsque la longueur de la clé est proche de 1 (ce qui correspond au cas d’un chiffrement par substitution simple), le test peut avoir du mal à distinguer si le chiffrement est de Vigenère ou simplement un chiffrement mono-alphabétique, puisque Ke ≈ K dans ce cas.
+### La forme de la clé:
 
-4. **Bruit statistique :**
-    - Le test est basé sur une estimation statistique des probabilités de répétition entre les lettres. Si des erreurs de comptage apparaissent ou si le texte contient des caractères non alphabétiques, cela peut introduire du bruit dans les calculs et perturber l'estimation de L.
+- Si la clé comporte n'est pas indépendante d'un caractère à l'autre et comporte des répétitions où qu'elle soit trop courte peut également amener à des erreurs.
 
-5. **Dépendance à des langues spécifiques :**
-    - Le test de Friedman dépend aussi des fréquences de lettres propres à une langue donnée. Si le texte analysé n'appartient pas à la langue attendue (ou s'il s'agit d'une combinaison de plusieurs langues), les probabilités calculées seront incorrectes, et donc le résultat pour la longueur de la clé sera biaisé.
+### Dépendance au langage:
 
-En résumé, le test de Friedman peut échouer en raison de simplifications et d'hypothèses qui ne correspondent pas toujours à la réalité, comme la distribution des lettres, la structure de la clé, ou encore la taille du texte chiffré. Ces facteurs doivent être pris en compte pour comprendre les limites de ce test dans l'analyse de chiffrement.
+- Le test a pour condition de devoir connaitre le langage du texte en clair car les proportions de chaque lettre d'un langage à l'autre ne sont pas les mêmes ainsi si on ne connait pas le langage du message de départ on ne pourra probablement pas trouver la taille de la clé.
