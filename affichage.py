@@ -254,7 +254,8 @@ def repetition(text, min_length=2):
     return longest_sequence
 
 
-#il faut que le mot probable soit plus grand
+#il faut que le mot probable soit au moins deux fois plus grand que la clé inconnue pour espérer de la retrouver
+#fonction qui
 def bazeries(texte_chiffre, mot_probable, position):
     dechiffre = ""
     for i in range (0, len(mot_probable)):
