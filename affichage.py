@@ -233,6 +233,9 @@ def trouverCle(texte_crypter, taille_cle):
     print("Echec dans la recherche de la cle")
     return None
 
+
+
+
 #-----------------------test------------------------------------------------
 #initialisation du message et son cryptage en vigenere
 texte = format("ceci est un texte exemple qui fait plaisir a la famille")
