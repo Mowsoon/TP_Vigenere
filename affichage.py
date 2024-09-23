@@ -256,7 +256,7 @@ def repetition(text, min_length=2):
 
     return longest_sequence
 
-
+  
 #il faut que le mot probable soit plus grand
 def bazeries(texte_chiffre, mot_probable, position):
     dechiffre = ""
