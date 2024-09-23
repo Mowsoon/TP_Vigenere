@@ -289,9 +289,8 @@ def bazeries_boucle (texte_chiffre, mot_probable):
 
 #-----------------------test------------------------------------------------
 #initialisation du message et son cryptage en vigenere
-texte = format("ceci est un texte exemple qui fait plaisir a la famille")
-cle = format("test de cle")
-
+texte = format("La nature est une source inépuisable de beauté et d'inspiration. Les montagnes majestueuses, les forêts denses et les rivières sinueuses offrent un spectacle à couper le souffle. Chaque saison apporte son lot de transformations, rendant la nature toujours changeante et fascinante. Au printemps, les arbres se parent de fleurs éclatantes, tandis que l'été inonde les paysages de lumière et de chaleur. L'automne, quant à lui, teinte la nature de couleurs chatoyantes, avec ses feuilles rouges et dorées, avant que l'hiver ne vienne recouvrir le tout d'un manteau blanc immaculé. Ce cycle infini nous rappelle à quel point la nature est précieuse et mérite d'être protégée. Que ce soit lors d'une promenade en forêt, d'une randonnée en montagne ou simplement en observant un coucher de soleil, la nature a le pouvoir de nous apaiser et de nous reconnecter à l'essentiel. Elle est un refuge pour ceux qui cherchent à échapper au stress de la vie moderne et une source de bien-être pour tous ceux qui prennent le temps de la contempler.")
+cle = format("test")
 
 """
 #pour entrer le message et la cle avec le terminal
@@ -299,72 +298,20 @@ texte = affiche("message")
 cle = affiche("cle")
 """
 
-
-
-
-""""
 crypter = vigenere(texte, cle)
-cle_possible = trouverCle(crypter, len(cle))
-print(cle_possible)
-print(vigenere(crypter, cle_possible, mode="decryptage"))
-"""
-
-"""
-#test pour le cryptage et decryptage
-
-print(f"Le message crypter est : \n{crypter}")
-decrypter = vigenere(crypter, cle,"decryptage")
-print(f"Le message decrypter est : \n{decrypter}")
-"""
-
-
-"""
-#testde la methode de Babbage et Kasiki
-
-longueur = methodeBabbageKasiki(crypter)
-
-if len(cle) in longueur:
-    print(f"Gagne la longueur de la cle est bien dans l'ensemble {longueur}")
-
+print(f"Le message crypter est : \n{crypter}\n")
+Kasiki = methodeBabbageKasiki(crypter)
+if len(cle) in Kasiki:
+    print(f"La longueur de la cle est dans l'ensemble {Kasiki}")
+    for i in Kasiki:
+        cle_potentiel = trouverCle(crypter, i)
+        print(f"pour la longueur {i} la cle serait {cle_potentiel}\nLe message originel serait donc {vigenere(crypter, cle_potentiel, mode='decryptage')}\n")
 else:
-    print(f"Perdu la cle n'est pas dans l'ensemble {longueur}")
+    print("Kasiki n'a pas réussi a trouver la taille de la cle")
 
-"""
-
-"""
-#test pour le calcul de proportion
-
-proportion_identique_de_lettres = [100/26] * 26
-pourcentages_lettres_en = generer_proportion_anglaise()
-pourcentages_lettres_fr = generer_proportion_francaise()
-taille_texte = 1000000
-print(f"Pour un texte de taille {taille_texte} la probabilité de tomber deux fois sur la même lettre de maniere aléatoire est:")
-
-
-#Ce test permet de demontrer que pour un texte d'une tres grande taille (1 000 000+)completement aleatoire,
-#la probabilité de trouver deux lettres identique est la meme que si les proportions de chaque lettres sont identiques
-#mais generer une grande chaine de carateres ainsi est couteux en mémoire.
-texte_aleatoire = generer_chaine_aleatoire(taille_texte)
-print(f"Pour un texte avec des proportions completements aleatoire:\n{trouverDeuxLettres(texte_aleatoire)}")
-print(f"Pour un texte générer avec le meme nombre de chaque lettre:\n{deuxLettresIdentiques(proportion_identique_de_lettres, taille_texte)}")
-
-
-
-print(f"Pour un texte francais:\n{deuxLettresIdentiques(pourcentages_lettres_fr, taille_texte)}")
-print(f"Pour un texte anglais:\n{deuxLettresIdentiques(pourcentages_lettres_en, taille_texte)}\n")
-"""
-
-
-
-"""
-#test de la methode de friedman
-taille_trouver = friedman(crypter)
-
-if len(cle) == taille_trouver:
-    print(f"Gagne la longueur de la cle est bien {taille_trouver}")
-    print(f"La cle est estimer etre {trouverCle(crypter,taille_trouver)}")
-
+Friedman = friedman(crypter)
+if len(cle) == Friedman:
+    cle_potentiel = trouverCle(crypter, Friedman)
+    print(f"La longueur de la cle est {Friedman} et sa valeur serait {cle_potentiel}\nLe message originel serait donc {vigenere(crypter, cle_potentiel, mode='decryptage')}\n")
 else:
-    print(f"Perdu la cle n'est pas {taille_trouver}")
-
-"""
+    print("Friedman n'a pas réussi a trouver la taille de la cle")
