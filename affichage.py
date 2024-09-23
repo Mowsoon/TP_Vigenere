@@ -233,31 +233,36 @@ def trouverCle(texte_crypter, taille_cle):
     print("Echec dans la recherche de la cle")
     return None
 
-def repetition(text, min_length=2):
-    longest_sequence = ""
 
-    # Parcourir le texte pour trouver les sous-chaînes de longueur >= min_length
-    for length in range(min_length, len(text)//2 + 1):
-        seen = {}
-        for i in range(len(text) - length + 1):
-            sequence = text[i:i+length]
-            if sequence in seen:
-                seen[sequence] += 1
+#Cherche les répétitions de séquence de mot de longueur >= 2 dans un mot ou texte entré en paramètre
+def repetition(texte):
+    plus_longue_sequence = ""
+
+    # Parcours le texte pour trouver les sous-chaînes de longueur >= min_length
+    for length in range(2, len(texte)//2 + 1):
+        repet = {}
+
+        for i in range(len(texte) - length + 1):
+            sequence = texte[i:i+length]
+            if sequence in repet:
+                repet[sequence] += 1
             else:
-                seen[sequence] = 1
+                repet[sequence] = 1
 
-        # Vérifier s'il y a une séquence répétée plus longue que celle déjà trouvée
-        for seq, count in seen.items():
-            if count > 1 and len(seq) > len(longest_sequence):
-                longest_sequence = seq
+        # Vérifie s'il y a une séquence répétée plus longue que celle déjà trouvée
+        for seq, count in repet.items():
+            if count > 1 and len(seq) > len(plus_longue_sequence):
+                plus_longue_sequence = seq
 
-    return longest_sequence
+    return plus_longue_sequence
 
 
-#il faut que le mot probable soit au moins deux fois plus grand que la clé inconnue pour espérer de la retrouver
-#fonction qui
+#fonction qui permet d'estimer une clé d'un texte chiffré grâce à un mot probable et à une position
+#il faut que le mot probable soit au moins deux fois plus grand que la clé inconnue pour espérer de la retrouver sinon on ne retrouvera que des morceaux de clé
 def bazeries(texte_chiffre, mot_probable, position):
     dechiffre = ""
+
+    #Déchiffre les lettres une par une dans la partie du texte chiffré débutant à la position indiquée en paramètre et jusqu'à la longueur du mot probable
     for i in range (0, len(mot_probable)):
         lettre = ord(texte_chiffre[i+position]) - ord('a')
         lettre_clair = ord(mot_probable[i]) - ord('a')
@@ -266,30 +271,30 @@ def bazeries(texte_chiffre, mot_probable, position):
 
         dechiffre += chr(valeur + ord('a'))
 
-
+    #Vérification de l'existence de répétitions dans le mot déchiffré, dans le cas où l'on trouve une répétition alors on en déduit que c'est une clé possible et on la retourne
     cles_repet = repetition((dechiffre))
     return cles_repet
 
 
+#Appelle la fonction bazeries en boucle pour chaque position possible dans le texte et renvoie une série de clé possible pour déchiffrer le texte chiffré
 def bazeries_boucle (texte_chiffre, mot_probable):
-
     cle_probable = []
 
+    #Parcours chaque position du texte pour essayer de trouver des clés possible en appelant la fonction bazeries
     for i in range (0, len(texte_chiffre)-len(mot_probable)):
         tmp = bazeries(texte_chiffre, mot_probable, i)
+        #Vérifie si la clé n'est pas égale au mot vide et si elle n'est pas déjà dans la liste des clés possibles
         if tmp != "" and tmp not in cle_probable:
             cle_probable.append(tmp)
 
         tmp = ""
 
-    print(cle_probable)
     return(cle_probable)
 
 #-----------------------test------------------------------------------------
 #initialisation du message et son cryptage en vigenere
-texte = format("ceci est un texte exemple qui fait plaisir a la famille")
-cle = format("test de cle")
-
+texte = format("La nature est une source inepuisable de beaute et d'inspiration. Les montagnes majestueuses, les forets denses et les rivieres sinueuses offrent un spectacle a couper le souffle. Chaque saison apporte son lot de transformations, rendant la nature toujours changeante et fascinante. Au printemps, les arbres se parent de fleurs eclatantes, tandis que l'ete inonde les paysages de lumiere et de chaleur. L'automne, quant a lui, teinte la nature de couleurs chatoyantes, avec ses feuilles rouges et dorees, avant que l'hiver ne vienne recouvrir le tout d'un manteau blanc immacule. Ce cycle infini nous rappelle a quel point la nature est precieuse et merite d'etre protegee. Que ce soit lors d'une promenade en foret, d'une randonnee en montagne ou simplement en observant un coucher de soleil, la nature a le pouvoir de nous apaiser et de nous reconnecter a l'essentiel. Elle est un refuge pour ceux qui cherchent a echapper au stress de la vie moderne et une source de bien-etre pour tous ceux qui prennent le temps de la contempler.")
+cle = format("test")
 
 """
 #pour entrer le message et la cle avec le terminal
@@ -297,72 +302,6 @@ texte = affiche("message")
 cle = affiche("cle")
 """
 
-
-
-
-""""
 crypter = vigenere(texte, cle)
-cle_possible = trouverCle(crypter, len(cle))
-print(cle_possible)
-print(vigenere(crypter, cle_possible, mode="decryptage"))
-"""
 
-"""
-#test pour le cryptage et decryptage
-
-print(f"Le message crypter est : \n{crypter}")
-decrypter = vigenere(crypter, cle,"decryptage")
-print(f"Le message decrypter est : \n{decrypter}")
-"""
-
-
-"""
-#testde la methode de Babbage et Kasiki
-
-longueur = methodeBabbageKasiki(crypter)
-
-if len(cle) in longueur:
-    print(f"Gagne la longueur de la cle est bien dans l'ensemble {longueur}")
-
-else:
-    print(f"Perdu la cle n'est pas dans l'ensemble {longueur}")
-
-"""
-
-"""
-#test pour le calcul de proportion
-
-proportion_identique_de_lettres = [100/26] * 26
-pourcentages_lettres_en = generer_proportion_anglaise()
-pourcentages_lettres_fr = generer_proportion_francaise()
-taille_texte = 1000000
-print(f"Pour un texte de taille {taille_texte} la probabilité de tomber deux fois sur la même lettre de maniere aléatoire est:")
-
-
-#Ce test permet de demontrer que pour un texte d'une tres grande taille (1 000 000+)completement aleatoire,
-#la probabilité de trouver deux lettres identique est la meme que si les proportions de chaque lettres sont identiques
-#mais generer une grande chaine de carateres ainsi est couteux en mémoire.
-texte_aleatoire = generer_chaine_aleatoire(taille_texte)
-print(f"Pour un texte avec des proportions completements aleatoire:\n{trouverDeuxLettres(texte_aleatoire)}")
-print(f"Pour un texte générer avec le meme nombre de chaque lettre:\n{deuxLettresIdentiques(proportion_identique_de_lettres, taille_texte)}")
-
-
-
-print(f"Pour un texte francais:\n{deuxLettresIdentiques(pourcentages_lettres_fr, taille_texte)}")
-print(f"Pour un texte anglais:\n{deuxLettresIdentiques(pourcentages_lettres_en, taille_texte)}\n")
-"""
-
-
-
-"""
-#test de la methode de friedman
-taille_trouver = friedman(crypter)
-
-if len(cle) == taille_trouver:
-    print(f"Gagne la longueur de la cle est bien {taille_trouver}")
-    print(f"La cle est estimer etre {trouverCle(crypter,taille_trouver)}")
-
-else:
-    print(f"Perdu la cle n'est pas {taille_trouver}")
-
-"""
+print(f"D'après la méthode de Bazeries : \nLes clés possibles trouvées sont : {bazeries_boucle(crypter, 'montagne')}")
