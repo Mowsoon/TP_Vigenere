@@ -188,7 +188,7 @@ def trouverDeuxLettres(texte):
     proportion = pourcentageLettres(texte)
     return deuxLettresIdentiques(proportion, len(texte))
 
-
+#fonction qui permet d'utiliser l'equation de friedman pour trouver la taille de la cle
 def friedman(texte_crypter, langue="fr"):
     taille_texte = len(texte_crypter)
 
@@ -217,16 +217,19 @@ def friedman(texte_crypter, langue="fr"):
 def trouverCle(texte_crypter, taille_cle):
     segments = [''] * taille_cle
     estimation = ""
-
+    #range chaque lettre du texte chiffrer avec l'indice de la cle lui correspondant
     for i in range(len(texte_crypter)):
         segments[i % taille_cle] += texte_crypter[i]
 
+    #pour chaque segment calcul la valeur de l'indice de la cle la plus probable
     for segment in segments:
         frequence = pourcentageLettres(segment)
         indiceMaxFrequence = frequence.index(max(frequence))
+
         #en sachant que e est la lettre la plus presente on estime que le decalage de la cle est (l'indice de la lettre la plus présente)-(l'indice de e)
         decalage = (indiceMaxFrequence - (ord('e') - ord('a'))) % 26
         estimation += chr(decalage + ord('a'))
+
     #verification que la cle est valide
     if vigenere(vigenere(texte_crypter, estimation),estimation, mode='decryptage') == texte_crypter:
         return estimation
@@ -253,9 +256,8 @@ def repetition(text, min_length=2):
 
     return longest_sequence
 
-
-#il faut que le mot probable soit au moins deux fois plus grand que la clé inconnue pour espérer de la retrouver
-#fonction qui
+  
+#il faut que le mot probable soit plus grand
 def bazeries(texte_chiffre, mot_probable, position):
     dechiffre = ""
     for i in range (0, len(mot_probable)):
