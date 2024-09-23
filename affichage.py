@@ -302,16 +302,16 @@ crypter = vigenere(texte, cle)
 print(f"Le message crypter est : \n{crypter}\n")
 Kasiki = methodeBabbageKasiki(crypter)
 if len(cle) in Kasiki:
-    print(f"La longueur de la cle est dans l'ensemble {Kasiki}")
+    print(f"La longueur de la cle est dans l'ensemble {Kasiki} d'apres Kasiki")
     for i in Kasiki:
         cle_potentiel = trouverCle(crypter, i)
-        print(f"pour la longueur {i} la cle serait {cle_potentiel}\nLe message originel serait donc {vigenere(crypter, cle_potentiel, mode='decryptage')}\n")
+        print(f"Pour la longueur {i} la cle serait {cle_potentiel}\nLe message originel serait donc {vigenere(crypter, cle_potentiel, mode='decryptage')}\n")
 else:
     print("Kasiki n'a pas réussi a trouver la taille de la cle")
 
 Friedman = friedman(crypter)
 if len(cle) == Friedman:
     cle_potentiel = trouverCle(crypter, Friedman)
-    print(f"La longueur de la cle est {Friedman} et sa valeur serait {cle_potentiel}\nLe message originel serait donc {vigenere(crypter, cle_potentiel, mode='decryptage')}\n")
+    print(f"La longueur de la cle est {Friedman} d'apres Friedman et sa valeur serait {cle_potentiel}\nLe message originel serait donc {vigenere(crypter, cle_potentiel, mode='decryptage')}\n")
 else:
     print("Friedman n'a pas réussi a trouver la taille de la cle")
