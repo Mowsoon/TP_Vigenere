@@ -230,23 +230,80 @@ def trouverCle(texte_crypter, taille_cle):
     return estimation
 
 
+
+def repetition(text, min_length=2):
+    longest_sequence = ""
+
+    # Parcourir le texte pour trouver les sous-chaînes de longueur >= min_length
+    for length in range(min_length, len(text)//2 + 1):
+        seen = {}
+        for i in range(len(text) - length + 1):
+            sequence = text[i:i+length]
+            if sequence in seen:
+                seen[sequence] += 1
+            else:
+                seen[sequence] = 1
+
+        # Vérifier s'il y a une séquence répétée plus longue que celle déjà trouvée
+        for seq, count in seen.items():
+            if count > 1 and len(seq) > len(longest_sequence):
+                longest_sequence = seq
+
+    return longest_sequence
+
+
+#il faut que le mot probable soit plus grand
+def bazeries(texte_chiffre, mot_probable, position):
+    dechiffre = ""
+    for i in range (0, len(mot_probable)):
+        lettre = ord(texte_chiffre[i+position]) - ord('a')
+        lettre_clair = ord(mot_probable[i]) - ord('a')
+
+        valeur = (lettre - lettre_clair) % 26
+
+        dechiffre += chr(valeur + ord('a'))
+
+
+    cles_repet = repetition((dechiffre))
+    return cles_repet
+
+
+def bazeries_boucle (texte_chiffre, mot_probable):
+
+    cle_probable = []
+
+    for i in range (0, len(texte_chiffre)-len(mot_probable)):
+        tmp = bazeries(texte_chiffre, mot_probable, i)
+        if tmp != "" and tmp not in cle_probable:
+            cle_probable.append(tmp)
+
+        tmp = ""
+
+    print(cle_probable)
+    return(cle_probable)
+
+
 #-----------------------test------------------------------------------------
+
 #initialisation du message et son cryptage en vigenere
-texte = format("Réseau et sécurité M1 informatique TP sur l’implémentation et la cryptanalyse du chiffrement de Vigenère Dans ce TP, nous allons implémenter un chiffrement de Vigenère. Puis, nous implémenterons des outils pour le casser. 1. Implémentation du chiffrement de Vigenère Exercice 1 : Implémentez un programme (en C par exemple) qui demande à l’utilisateur de saisir un texte, et qui l’affiche. Exercice 2 : Modifiez votre programme pour qu’il convertisse toutes les lettres en minuscules, et qu’il enlève tous les autres caractères. Exemple: user$ prog2 Entrez un texte : Le soleil brille! Texte non chiffré : lesoleilbrille Exercice 3 : Implémentez une fonction qui prend en entrée deux lettres minuscules (l’une étant une lettre du texte non chiffré, et l’autre une lettre de la clé), et qui retourne la lettre minuscule correspondante chiffrée. Exemple : user$ prog3 m b b = 2 m + 2 = o Exercice 4 : Modifiez votre programme pour qu’il demande à l’utilisateur deux textes (l’un étant le texte non chiffré, et l’autre la clé), qui les convertit tous les deux (selon l’exercice 2), et qui chiffre le texte avec le chiffrement de Vigenère et la clé donnée. Exercice 5 : Implémentez un programme qui demande à l’utilisateur deux textes (l’un étant le texte chiffré, et l’autre la clé), et qui déchiffre le texte. 2. Cryptanalyse par estimation de la longueur de la clé et analyse fréquentielle 2.1 Méthode de Babbage et Kasiki Exercice 6 : Implémentez un programme qui prend en paramètre un texte chiffré, et qui affiche toutes les occurrences de séquences de 3 lettres ou plus qui se répétent. Exemple : user$ prog6 cipher: abcdefghijklmnopqrstuvwxyzabcdmnoabc abc trouvé 3 fois bcd trouvé 3 fois abcd trouvé 2 fois mno trouvé 2 fois Exercice 7 : Modifiez votre programme pour qu’il calcule la longueur de la clé à partir des distances entre les répétitions. Exercice 8 : Améliorez votre programme pour qu’il supprime les répétitions peu probables (par exemple, 10% des répétitions). Expliquez ce que vous considérez comme peu probable. 2.2 Test de Friedman Exercice 9 : Soit Tr un grand texte, généré aléatoirement, en utilisant seulement des lettres minuscules. Quelle est la probabilité Kr que deux lettres choisies aléatoirement soient égales, dans Tr ? Exercice 10 : Soit Te un grand texte rédigé en anglais, et utilisant uniquement des lettres minuscules. La probabilité que deux lettres choisies aléatoirement soient égales dans Te est environ Ke≈0.067. Expliquez pourquoi cette valeur est différente de la valeur de l’exercice 9. Exercice 11 : Soit T un texte utilisant uniquement des lettres minuscules. Écrivez un programme qui calcule la probabilité K que deux lettres choisies aléatoirement soient les mêmes dans T. Remarque : Vous pouvez considérer les 26 événements indépendants consistant à choisir la lettre li d’abord. Ainsi, K devient la somme des probabilités Ki, où Ki est la probabilité que deux lettres choisies aléatoirement soient égales à li. Exercice 12 : Le test de Friedman estime la longueur de la clé L comme (Ke-Kr)/(K-Kr). Calculez L. Remarque : Quand L=1, on a Ke=K, puisque le chiffrement de Vigenère correspond alors au cas d’un chiffrement par substitution simple. For L>1, K est égal à la probabilité que li soit égale à lj, avec li et lj qui correspondent à la même position dans la clé, plus la probabilité que li soit égale à lj, avec li et lj qui correspondent à des positions différentes dans la clé. Ainsi, K est égal à Ke/L (car il y a une probabilité 1/L que li et lj correspondent à la même position de la clé) plus (L-1).Kr/L (car il y a une probabilité (L-1)/L que li et lj correspondent à des positions différentes de la clé). Dans ce cas, on a (Ke-Kr)/(K-Kr)=L. Exercice 13 : Comment expliquez-vous que le test de Friedman puisse échouer ? Vous pouvez proposer plusieurs explications, par exemple en discutant sur les hypothèses de simplification faites dans la remarque de l’exercice 12. 2.3 Analyse fréquentielle Exercice 14 : Implémentez un programme qui prend en entrée un texte chiffré et une longueur de clé, et qui casse le chiffrement de Vigenère en utilisant une analyse fréquentielle. Le programme peut demander à l’utilisateur quel caractère chiffré correspond à quel caractère en clair, mais le programme doit fournir à l’utilisateur assez d’informations. 3. Cryptanalyse par méthode du mot probable La méthode de Bazeries consiste à deviner un mot probable, et essaye de trouver la clé en testant ce mot à toutes les positions possibles. Le mot probable doit idéalement avoir une longueur supérieure (strictement) à celle de la clé. Exercice 15 : Implémentez un programme qui prend en entrée un texte chiffré, un mot probable et une position. Le programme essaye de décrypter le texte chiffré en utilisant le mot probable comme clé. Si le mot probable est correctement placé, le résultat est la clé (répétée). Exercice 16 : Modifiez votre programme pour qu’il teste toutes les positions possibles, et affiche toutes les clés possibles. Remarque 1 : Une clé possible est un mot qui se répète. Remarque 2 : Prenez soin à bien faire en sorte que la clé s’affiche à partir de la bonne position (par exemple, si le mot probable est trouvé en position 2, la première lettre trouvée de la clé va être la lettre 2 ; il faut penser à réafficher la clé à partir de la première lettre).")
-cle = format("soleil")
+texte = format("Dans un petit village niché au cœur des montagnes, une légende circulait depuis des générations. Elle parlait d'une grotte secrète, cachée au sommet du plus haut pic, qui renfermait des trésors oubliés depuis des siècles. Les anciens disaient que seuls les plus braves et les plus purs de cœur pouvaient espérer atteindre cette grotte, car le chemin était périlleux, semé d'embûches, et gardé par des créatures mysterieuses. Beaucoup avaient tenté l'aventure, mais aucun n'en était jamais revenu. Les habitants du village vivaient paisiblement, bercés par les récits des anciens, sans vraiment croire qu'un jour quelqu'un pourrait découvrir le secret de la montagne. Pourtant, un jour, un jeune homme du nom d'Élias, intrépide et curieux, décida de braver l'interdit. Depuis son enfance, il avait entendu parler de la légende et, malgré les avertissements de ses parents et des anciens du village, il sentait en lui un appel irrésistible à partir à la découverte de cette grotte mythique. Équipé d'un simple sac à dos, de provisions et d'une vieille carte transmise de génération en génération, Élias entreprit son voyage. Les premiers jours de marche furent relativement faciles, les sentiers étaient bien tracés et il pouvait encore apercevoir le village en contrebas à mesure qu'il montait. Mais plus il s'enfonçait dans la montagne, plus le paysage devenait hostile. Les arbres se raréfiaient, remplacés par des rochers escarpés et des falaises vertigineuses. Le vent soufflait avec une intensité grandissante, rendant chaque pas plus difficile. Pourtant, Élias continuait d'avancer, déterminé à percer le mystère. Au bout de quelques jours, il atteignit une partie du chemin que personne dans le village n'avait jamais évoquée. Un épais brouillard entourait les lieux, et une étrange sensation de malaise s'empara de lui. C'était comme si la montagne elle-même cherchait à le dissuader de continuer. Mais Élias, fort de sa détermination, refusa de faire demi-tour. Il savait qu'il était proche. Le soir venu, alors qu'il s'apprêtait à monter son camp pour la nuit, il entendit un bruit sourd résonner au loin. Intrigué, il suivit le son jusqu'à une petite crevasse dissimulée entre deux rochers. Là, il découvrit une entrée secrète, à peine visible sous les ombres du crépuscule. Sans hésiter, il s'y engouffra. À l'intérieur, il fut accueilli par un silence pesant et une obscurité totale. Il alluma sa lampe et progressa lentement à travers les étroits passages de la grotte. Les murs étaient ornés de gravures anciennes, retraçant des histoires de batailles, de royaumes disparus et de créatures légendaires. Plus il avançait, plus il se rendait compte que cette grotte n'était pas simplement un abri naturel, mais un lieu de grande importance pour une civilisation oubliée. Au bout de ce qui lui sembla être des heures, Élias déboucha dans une immense cavité. Devant lui, se dressait un gigantesque autel de pierre, sur lequel reposait un coffre en or massif, incrusté de pierres précieuses. Le cœur battant, il s'approcha lentement du coffre. Mais au moment où il tendit la main pour l'ouvrir, un grondement sourd fit trembler la grotte. Des ombres se mirent à bouger autour de lui, et il se retrouva face à face avec une créature gigantesque, mi-humaine, mi-féline, dont les yeux luisaient dans l'obscurité. 'Qui ose troubler le repos des anciens ?' gronda la créature d'une voix profonde. Pris de panique, Élias recula, mais quelque chose en lui l'empêchait de fuir. Il se redressa et, rassemblant tout son courage, il répondit : 'Je suis Élias, venu en quête de vérité, et non de trésors. Si je suis ici, c'est pour comprendre les mystères de cette montagne et honorer ceux qui y ont vécu avant nous.' La créature le fixa longuement, comme si elle sondait son âme. Puis, lentement, elle s'écarta, laissant le chemin libre vers le coffre. Élias, surpris mais soulagé, s'avança de nouveau. Lorsqu'il ouvrit le coffre, il ne trouva pas d'or, ni de bijoux, mais des parchemins anciens, contenant des écrits oubliés, des connaissances perdues sur le monde, la nature, et les secrets de la vie elle-même. Élias comprit alors que la véritable richesse ne résidait pas dans les biens matériels, mais dans la connaissance et la sagesse. Il quitta la grotte avec les parchemins, déterminé à les partager avec son village et à changer la façon dont ses habitants voyaient le monde. À son retour, il fut accueilli en héros. Non seulement il avait survécu à l'aventure, mais il apportait avec lui un savoir inestimable, capable de transformer leur vie à jamais. La légende de la montagne ne serait plus jamais perçue comme un simple conte, mais comme une vérité profonde sur la quête de soi et la valeur de la connaissance.")
+cle = format("alban")
+
+print(bazeries_boucle(vigenere(texte, cle), "mysterieuse"))
+
 """
 #pour entrer le message et la cle avec le terminal
 texte = affiche("message")
 cle = affiche("cle")
 """
 crypter = vigenere(texte, cle)
+print(trouverCle(crypter, len(cle)))
 
 
 
 
-"""
 #test pour le cryptage et decryptage
-
+"""
 print(f"Le message crypter est : \n{crypter}")
 decrypter = vigenere(crypter, cle,"decryptage")
 print(f"Le message decrypter est : \n{decrypter}")
