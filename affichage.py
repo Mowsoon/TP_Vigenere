@@ -236,30 +236,36 @@ def trouverCle(texte_crypter, taille_cle):
     print("Echec dans la recherche de la cle")
     return None
 
-def repetition(text, min_length=2):
-    longest_sequence = ""
 
-    # Parcourir le texte pour trouver les sous-chaînes de longueur >= min_length
-    for length in range(min_length, len(text)//2 + 1):
-        seen = {}
-        for i in range(len(text) - length + 1):
-            sequence = text[i:i+length]
-            if sequence in seen:
-                seen[sequence] += 1
+#Cherche les répétitions de séquence de mot de longueur >= 2 dans un mot ou texte entré en paramètre
+def repetition(texte):
+    plus_longue_sequence = ""
+
+    # Parcours le texte pour trouver les sous-chaînes de longueur >= min_length
+    for length in range(2, len(texte)//2 + 1):
+        repet = {}
+
+        for i in range(len(texte) - length + 1):
+            sequence = texte[i:i+length]
+            if sequence in repet:
+                repet[sequence] += 1
             else:
-                seen[sequence] = 1
+                repet[sequence] = 1
 
-        # Vérifier s'il y a une séquence répétée plus longue que celle déjà trouvée
-        for seq, count in seen.items():
-            if count > 1 and len(seq) > len(longest_sequence):
-                longest_sequence = seq
+        # Vérifie s'il y a une séquence répétée plus longue que celle déjà trouvée
+        for seq, count in repet.items():
+            if count > 1 and len(seq) > len(plus_longue_sequence):
+                plus_longue_sequence = seq
 
-    return longest_sequence
+    return plus_longue_sequence
 
-  
-#il faut que le mot probable soit plus grand
+
+#fonction qui permet d'estimer une clé d'un texte chiffré grâce à un mot probable et à une position
+#il faut que le mot probable soit au moins deux fois plus grand que la clé inconnue pour espérer de la retrouver sinon on ne retrouvera que des morceaux de clé
 def bazeries(texte_chiffre, mot_probable, position):
     dechiffre = ""
+
+    #Déchiffre les lettres une par une dans la partie du texte chiffré débutant à la position indiquée en paramètre et jusqu'à la longueur du mot probable
     for i in range (0, len(mot_probable)):
         lettre = ord(texte_chiffre[i+position]) - ord('a')
         lettre_clair = ord(mot_probable[i]) - ord('a')
@@ -268,23 +274,24 @@ def bazeries(texte_chiffre, mot_probable, position):
 
         dechiffre += chr(valeur + ord('a'))
 
-
+    #Vérification de l'existence de répétitions dans le mot déchiffré, dans le cas où l'on trouve une répétition alors on en déduit que c'est une clé possible et on la retourne
     cles_repet = repetition((dechiffre))
     return cles_repet
 
 
+#Appelle la fonction bazeries en boucle pour chaque position possible dans le texte et renvoie une série de clé possible pour déchiffrer le texte chiffré
 def bazeries_boucle (texte_chiffre, mot_probable):
-
     cle_probable = []
 
+    #Parcours chaque position du texte pour essayer de trouver des clés possible en appelant la fonction bazeries
     for i in range (0, len(texte_chiffre)-len(mot_probable)):
         tmp = bazeries(texte_chiffre, mot_probable, i)
+        #Vérifie si la clé n'est pas égale au mot vide et si elle n'est pas déjà dans la liste des clés possibles
         if tmp != "" and tmp not in cle_probable:
             cle_probable.append(tmp)
 
         tmp = ""
 
-    print(cle_probable)
     return(cle_probable)
 
 #-----------------------test------------------------------------------------
@@ -299,6 +306,7 @@ cle = affiche("cle")
 """
 
 crypter = vigenere(texte, cle)
+
 print(f"Le message crypter est : \n{crypter}\n")
 Kasiki = methodeBabbageKasiki(crypter)
 if len(cle) in Kasiki:
@@ -315,3 +323,5 @@ if len(cle) == Friedman:
     print(f"La longueur de la cle est {Friedman} d'apres Friedman et sa valeur serait {cle_potentiel}\nLe message originel serait donc {vigenere(crypter, cle_potentiel, mode='decryptage')}\n")
 else:
     print("Friedman n'a pas réussi a trouver la taille de la cle")
+
+print(f"D'après la méthode de Bazeries : \nLes clés possibles trouvées sont : {bazeries_boucle(crypter, 'montagne')}")
