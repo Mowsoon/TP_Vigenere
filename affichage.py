@@ -188,7 +188,7 @@ def trouverDeuxLettres(texte):
     proportion = pourcentageLettres(texte)
     return deuxLettresIdentiques(proportion, len(texte))
 
-
+#fonction qui permet d'utiliser l'equation de friedman pour trouver la taille de la cle
 def friedman(texte_crypter, langue="fr"):
     taille_texte = len(texte_crypter)
 
@@ -217,16 +217,19 @@ def friedman(texte_crypter, langue="fr"):
 def trouverCle(texte_crypter, taille_cle):
     segments = [''] * taille_cle
     estimation = ""
-
+    #range chaque lettre du texte chiffrer avec l'indice de la cle lui correspondant
     for i in range(len(texte_crypter)):
         segments[i % taille_cle] += texte_crypter[i]
 
+    #pour chaque segment calcul la valeur de l'indice de la cle la plus probable
     for segment in segments:
         frequence = pourcentageLettres(segment)
         indiceMaxFrequence = frequence.index(max(frequence))
+
         #en sachant que e est la lettre la plus presente on estime que le decalage de la cle est (l'indice de la lettre la plus présente)-(l'indice de e)
         decalage = (indiceMaxFrequence - (ord('e') - ord('a'))) % 26
         estimation += chr(decalage + ord('a'))
+
     #verification que la cle est valide
     if vigenere(vigenere(texte_crypter, estimation),estimation, mode='decryptage') == texte_crypter:
         return estimation
@@ -303,5 +306,22 @@ cle = affiche("cle")
 """
 
 crypter = vigenere(texte, cle)
+
+print(f"Le message crypter est : \n{crypter}\n")
+Kasiki = methodeBabbageKasiki(crypter)
+if len(cle) in Kasiki:
+    print(f"La longueur de la cle est dans l'ensemble {Kasiki} d'apres Kasiki")
+    for i in Kasiki:
+        cle_potentiel = trouverCle(crypter, i)
+        print(f"Pour la longueur {i} la cle serait {cle_potentiel}\nLe message originel serait donc {vigenere(crypter, cle_potentiel, mode='decryptage')}\n")
+else:
+    print("Kasiki n'a pas réussi a trouver la taille de la cle")
+
+Friedman = friedman(crypter)
+if len(cle) == Friedman:
+    cle_potentiel = trouverCle(crypter, Friedman)
+    print(f"La longueur de la cle est {Friedman} d'apres Friedman et sa valeur serait {cle_potentiel}\nLe message originel serait donc {vigenere(crypter, cle_potentiel, mode='decryptage')}\n")
+else:
+    print("Friedman n'a pas réussi a trouver la taille de la cle")
 
 print(f"D'après la méthode de Bazeries : \nLes clés possibles trouvées sont : {bazeries_boucle(crypter, 'montagne')}")
