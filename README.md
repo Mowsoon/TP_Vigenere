@@ -1,33 +1,43 @@
-# TP_Vigenere
+# Cryptage et Analyse de Texte
 
-### **Exercice 8 : Enlever les répétions peu probable:**
+Ce projet implémente des algorithmes de cryptage et des techniques d'analyse de texte, notamment la méthode de Vigenère, ainsi que des méthodes d'analyse de fréquence et de détection de motifs. Le code est écrit en Python et utilise diverses bibliothèques pour le traitement des chaînes de caractères et des statistiques.
 
-Puisque la méthode de Babbage et Kasiki calcul la taille de la clé en fonction des répétitions d'occurence, si ces répétitions ne pas très communes elles ont la possibilités de fausser le résultat et de nous empecher de trouver la clé car on ne trouve pas de diviseurs communs car certaine répétitions seraient dû au hazard et non à une répétition de la clé sur la même séquence:
+## Fonctionnalités
 
-- On peut donc enlever les séquences avec des occurences bien plus faible que la moyenne et ainsi seulement garder les plus grandes récurences qui on une probabilité de correspondre au répétition de la clé plus élevé.
+- **Affichage et formatage des chaînes de caractères** : 
+  - La fonction `affiche` permet de saisir une chaîne et de la formater en ne gardant que les caractères alphanumériques en minuscules.
+  - La fonction `format` effectue un formatage similaire mais prend une chaîne en paramètre.
 
+- **Cryptage et décryptage** :
+  - La fonction `vigenere` permet de crypter et déchiffrer un message en utilisant la méthode de Vigenère.
+  
+- **Analyse de fréquence** :
+  - La fonction `occurence` identifie les séquences de 3 caractères ou plus qui apparaissent plusieurs fois dans une chaîne.
+  - La fonction `distance` calcule les distances entre les occurrences d'une séquence donnée.
 
-- Dans cette logique on peut même seulement garder la séquence avec le plus d'occurence car elle est celle qui a les plus grandes chance de correspondre aux répétitions de la clé tout en ayant l'option qui réduit le plus les chances de ne pas trouver de diviseurs commun.
+- **Détection de motifs** :
+  - La fonction `liste_diviseurs_commun` détermine les diviseurs communs des distances entre les occurrences.
+  - La fonction `repetition` cherche des répétitions de séquences dans un texte donné.
 
+- **Estimation de clé** :
+  - La fonction `friedman` utilise l'équation de Friedman pour estimer la taille de la clé d'un texte chiffré.
+  - La fonction `trouverCle` permet de trouver la clé en fonction de son estimation.
 
-   
+- **Analyse de probabilité** :
+  - Les fonctions `trouverDeuxLettres` et `deuxLettresIdentiques` calculent la probabilité que deux lettres choisies aléatoirement soient identiques.
 
+- **Fonctionnalité Babbage-Kasiki** : 
+  - La méthode `methodeBabbageKasiki` permet d'analyser un texte chiffré pour déduire des informations sur la clé utilisée.
 
+## Prérequis
 
+- Python 3.x
+- Bibliothèque standard de Python
 
+## Utilisation
 
-### **Exercice 13 : Pourquoi le test de Friedman peut-il échouer ?**
+1. **Installation** : Clonez le dépôt sur votre machine locale :
 
-Le test de Friedman pour estimer la longueur de la clé L repose sur des hypothèses qui peuvent ne pas toujours être valides dans des situations réelles. Voici plusieurs raisons qui peuvent expliquer l'échec du test :
+   ```bash
+   git clone https://github.com/votre-utilisateur/nom-du-depot.git
 
-### La taille du texte:
-
-- Le test suppose que les lettres du texte clair suivent une distribution classique de leur langue, hors si le texte n'est pas assez long il ne sera pas fidèle à ses proportions, où si le texte possède une distribution insolite alors le test ne fonctionera pas.
-
-### La forme de la clé:
-
-- Si la clé comporte n'est pas indépendante d'un caractère à l'autre et comporte des répétitions où qu'elle soit trop courte peut également amener à des erreurs.
-
-### Dépendance au langage:
-
-- Le test a pour condition de devoir connaitre le langage du texte en clair car les proportions de chaque lettre d'un langage à l'autre ne sont pas les mêmes ainsi si on ne connait pas le langage du message de départ on ne pourra probablement pas trouver la taille de la clé.

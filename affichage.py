@@ -1,8 +1,13 @@
 import math
 import random
 import string
+import time
 from collections import defaultdict
 from collections import Counter
+
+FREQUENCE_FR = ['e', 'a', 's', 'i', 'n', 'r', 't', 'u', 'l', 'o', 'd', 'm', 'p', 'c', 'v', 'q', 'b', 'g', 'f', 'h', 'j',
+                'x', 'y', 'z', 'k', 'w']
+
 
 # fonction permettant d'entrer une chaine de caracteres et de la mettre sous le format avec seulement des lettres en minuscule
 # parametre: X: permet d'adapter la phrase d'input
@@ -13,6 +18,7 @@ def affiche(x):
     text = "".join([char for char in text.lower() if char.isalnum()])
 
     return text
+
 
 #fonction identique a affiche mais faire pour les tests avec la chaine directement en parametre
 def format(text):
@@ -26,6 +32,7 @@ def format(text):
 #               cle:        chaine de caractere codant la modification
 #               mode:       parametre optionnel permettant de choisir si on veut crypter ou decrypter, automatiquement en cypter
 def vigenere(message, cle, mode='cryptage'):
+    global valeur
     text = ""
 
     #initialisation du compteur pour la cle
@@ -41,17 +48,17 @@ def vigenere(message, cle, mode='cryptage'):
         lettre = ord(message[i]) - ord('a')
         cle_val = ord(cle[j]) - ord('a')
 
-
         #Si on crypte on avance la lettre de la valeur de la cle, sinon on recule
         if mode == "cryptage":
-            valeur = (lettre + cle_val ) % 26
+            valeur = (lettre + cle_val) % 26
         if mode == "decryptage":
-            valeur = (lettre - cle_val ) % 26
+            valeur = (lettre - cle_val) % 26
 
         #Le caractere trouver est remis sous code Unicode et remis sous format de lettre puis ajouter a le chaine de resultat
         text += chr(valeur + ord('a'))
         j += 1
     return text
+
 
 #fonction qui mappe les sequences de 3 ou plus caracteres d'une chaine de caracteres
 #et qui affiche les sequences qui revienne au moins une fois.
@@ -81,12 +88,13 @@ def occurence(texte_crypter):
 
     return [max_sequence, count_max, texte_crypter]
 
+
 # fonction qui permet de trouver les distances entre chaque occurences d'une sequence sur une chaine de caracteres
 # prend en parametre une liste qui a en premier element la sequence, en deuxieme son nombre d'occurence et enfin la chaine de caracteres
 def distance(chaine):
-    sequence    = chaine[0]
-    repetion    = chaine[1]
-    texte       = chaine[2]
+    sequence = chaine[0]
+    repetion = chaine[1]
+    texte = chaine[2]
 
     position = []
     start = 0
@@ -121,17 +129,17 @@ def liste_diviseurs_commun(distances):
 def liste_diviseurs(n):
     diviseurs = set()
     #boucle de 1 jusqu'a la racine de la valeur
-    for i in range(1, int(math.sqrt(n))+1):
+    for i in range(1, int(math.sqrt(n)) + 1):
         #si un diviseur est trouver l'ajoute ainsi que son oppose par rapport a la valeur si ce n'est pas lui meme
-        if n%i==0:
+        if n % i == 0:
             diviseurs.add(i)
-            if i != n//i:
-                diviseurs.add(n//i)
+            if i != n // i:
+                diviseurs.add(n // i)
     return diviseurs
+
 
 def methodeBabbageKasiki(texte_crypter):
     return liste_diviseurs_commun(distance(occurence(texte_crypter)))
-
 
 
 def generer_chaine_aleatoire(taille):
@@ -145,13 +153,11 @@ def generer_proportion_anglaise():
             0.772, 4.025, 2.406, 6.749, 7.507, 1.929, 0.095, 5.987, 6.327, 9.056,
             2.758, 0.978, 2.360, 0.150, 1.974, 0.074]
 
+
 def generer_proportion_francaise():
     return [7.636, 0.901, 3.26, 3.669, 14.715, 1.066, 0.866, 0.737, 7.529, 0.613,
             0.074, 5.456, 2.968, 7.095, 5.796, 2.521, 1.362, 6.693, 7.948, 7.244,
             6.311, 1.838, 0.049, 0.427, 0.128, 0.326]
-
-
-
 
 
 #fonction qui renvoie un tableau des lettres de l'alphabet en minuscule ou la valeur du tableau est le pourcentage
@@ -174,19 +180,21 @@ def deuxLettresIdentiques(pourcentages, taille_texte):
     #calcul la probabilte pour chaque lettre
     for p in pourcentages:
         #met le pourcentage en format de probabilites et trouve le nombre de lettre presente dans le texte
-        p = p/100
+        p = p / 100
         nombre_lettre = p * taille_texte
 
         #trouve la probabilite que la lettre actuel soit celle que l'on est trouve deux fois
-        prob_lettre = (nombre_lettre*(nombre_lettre-1))/(taille_texte * (taille_texte-1))
+        prob_lettre = (nombre_lettre * (nombre_lettre - 1)) / (taille_texte * (taille_texte - 1))
         #incremente la probabilite de trouver n'importe quelle lettre 2 fois
         prob_identique += prob_lettre
     return prob_identique
+
 
 #fonction permettant de prendre un texte et calculer la probabilite que si 2 lettres soit choisi aleatoirement, elles soient les memes
 def trouverDeuxLettres(texte):
     proportion = pourcentageLettres(texte)
     return deuxLettresIdentiques(proportion, len(texte))
+
 
 #fonction qui permet d'utiliser l'equation de friedman pour trouver la taille de la cle
 def friedman(texte_crypter, langue="fr"):
@@ -198,7 +206,7 @@ def friedman(texte_crypter, langue="fr"):
     elif langue == "en":
         Ke = deuxLettresIdentiques(generer_proportion_anglaise(), taille_texte)
     else:
-        return None #cas de langue inconnue
+        return None  #cas de langue inconnue
 
     #calcul de Kr sur un texte aleatoire
     if taille_texte < 1000000:
@@ -213,6 +221,7 @@ def friedman(texte_crypter, langue="fr"):
     if Ke == K: return 1
     return round((Ke - Kr) / (K - Kr))
 
+
 #permet d'estimer la cle en connaissant sa taille et en fonction de l'analyse frequentielle
 def trouverCle(texte_crypter, taille_cle):
     segments = [''] * taille_cle
@@ -226,15 +235,31 @@ def trouverCle(texte_crypter, taille_cle):
         frequence = pourcentageLettres(segment)
         indiceMaxFrequence = frequence.index(max(frequence))
 
-        #en sachant que e est la lettre la plus presente on estime que le decalage de la cle est (l'indice de la lettre la plus présente)-(l'indice de e)
-        decalage = (indiceMaxFrequence - (ord('e') - ord('a'))) % 26
-        estimation += chr(decalage + ord('a'))
+        valide = False
+        frequence_index = 0
 
-    #verification que la cle est valide
-    if vigenere(vigenere(texte_crypter, estimation),estimation, mode='decryptage') == texte_crypter:
-        return estimation
-    print("Echec dans la recherche de la cle")
-    return None
+        #on calcul le decalage dans l'ordre de frequence des lettres dans le texte francais puis on trouve la lettre de la cle associe a ce decalage
+        while not valide and frequence_index < len(FREQUENCE_FR):
+            #lettre de frequence enregistrer et calcul du decalage en fonction
+            lettre_actuel = FREQUENCE_FR[frequence_index]
+            decalage = (indiceMaxFrequence - (ord(lettre_actuel) - ord('a'))) % 26
+            #On trouve la lettre associer puis on demande verrification il faut repondre par o ou n
+            tentative = chr(decalage + ord('a'))
+            print(f"La cle est actuelle: {estimation + tentative}")
+            reponse = ""
+            while reponse.lower() != "o" and reponse.lower() != "n":
+                reponse = input(f"Est ce que la derniere lettre semble correct? (o/n)\n")
+            if reponse.lower() == "o":
+                estimation += tentative
+                valide = True
+                print()
+            else:
+                frequence_index += 1  #si faux on passe a la lettre suivante
+
+        #dans le cas ou l'utilisateur ne choisi aucune lettre on remplace par un ?
+        if not valide:
+            estimation += '?'
+    return estimation
 
 
 #Cherche les répétitions de séquence de mot de longueur >= 2 dans un mot ou texte entré en paramètre
@@ -242,11 +267,11 @@ def repetition(texte):
     plus_longue_sequence = ""
 
     # Parcours le texte pour trouver les sous-chaînes de longueur >= min_length
-    for length in range(2, len(texte)//2 + 1):
+    for length in range(2, len(texte) // 2 + 1):
         repet = {}
 
         for i in range(len(texte) - length + 1):
-            sequence = texte[i:i+length]
+            sequence = texte[i:i + length]
             if sequence in repet:
                 repet[sequence] += 1
             else:
@@ -266,8 +291,8 @@ def bazeries(texte_chiffre, mot_probable, position):
     dechiffre = ""
 
     #Déchiffre les lettres une par une dans la partie du texte chiffré débutant à la position indiquée en paramètre et jusqu'à la longueur du mot probable
-    for i in range (0, len(mot_probable)):
-        lettre = ord(texte_chiffre[i+position]) - ord('a')
+    for i in range(0, len(mot_probable)):
+        lettre = ord(texte_chiffre[i + position]) - ord('a')
         lettre_clair = ord(mot_probable[i]) - ord('a')
 
         valeur = (lettre - lettre_clair) % 26
@@ -280,11 +305,11 @@ def bazeries(texte_chiffre, mot_probable, position):
 
 
 #Appelle la fonction bazeries en boucle pour chaque position possible dans le texte et renvoie une série de clé possible pour déchiffrer le texte chiffré
-def bazeries_boucle (texte_chiffre, mot_probable):
+def bazeries_boucle(texte_chiffre, mot_probable):
     cle_probable = []
 
     #Parcours chaque position du texte pour essayer de trouver des clés possible en appelant la fonction bazeries
-    for i in range (0, len(texte_chiffre)-len(mot_probable)):
+    for i in range(0, len(texte_chiffre) - len(mot_probable)):
         tmp = bazeries(texte_chiffre, mot_probable, i)
         #Vérifie si la clé n'est pas égale au mot vide et si elle n'est pas déjà dans la liste des clés possibles
         if tmp != "" and tmp not in cle_probable:
@@ -292,11 +317,13 @@ def bazeries_boucle (texte_chiffre, mot_probable):
 
         tmp = ""
 
-    return(cle_probable)
+    return (cle_probable)
+
 
 #-----------------------test------------------------------------------------
 #initialisation du message et son cryptage en vigenere
-texte = format("La nature est une source inepuisable de beaute et d'inspiration. Les montagnes majestueuses, les forets denses et les rivieres sinueuses offrent un spectacle a couper le souffle. Chaque saison apporte son lot de transformations, rendant la nature toujours changeante et fascinante. Au printemps, les arbres se parent de fleurs eclatantes, tandis que l'ete inonde les paysages de lumiere et de chaleur. L'automne, quant a lui, teinte la nature de couleurs chatoyantes, avec ses feuilles rouges et dorees, avant que l'hiver ne vienne recouvrir le tout d'un manteau blanc immacule. Ce cycle infini nous rappelle a quel point la nature est precieuse et merite d'etre protegee. Que ce soit lors d'une promenade en foret, d'une randonnee en montagne ou simplement en observant un coucher de soleil, la nature a le pouvoir de nous apaiser et de nous reconnecter a l'essentiel. Elle est un refuge pour ceux qui cherchent a echapper au stress de la vie moderne et une source de bien-etre pour tous ceux qui prennent le temps de la contempler.")
+texte = format(
+    "La nature est une source inepuisable de beaute et d'inspiration. Les montagnes majestueuses, les forets denses et les rivieres sinueuses offrent un spectacle a couper le souffle. Chaque saison apporte son lot de transformations, rendant la nature toujours changeante et fascinante. Au printemps, les arbres se parent de fleurs eclatantes, tandis que l'ete inonde les paysages de lumiere et de chaleur. L'automne, quant a lui, teinte la nature de couleurs chatoyantes, avec ses feuilles rouges et dorees, avant que l'hiver ne vienne recouvrir le tout d'un manteau blanc immacule. Ce cycle infini nous rappelle a quel point la nature est precieuse et merite d'etre protegee. Que ce soit lors d'une promenade en foret, d'une randonnee en montagne ou simplement en observant un coucher de soleil, la nature a le pouvoir de nous apaiser et de nous reconnecter a l'essentiel. Elle est un refuge pour ceux qui cherchent a echapper au stress de la vie moderne et une source de bien-etre pour tous ceux qui prennent le temps de la contempler.")
 cle = format("test")
 
 """
@@ -309,19 +336,25 @@ crypter = vigenere(texte, cle)
 
 print(f"Le message crypter est : \n{crypter}\n")
 Kasiki = methodeBabbageKasiki(crypter)
-if len(cle) in Kasiki:
-    print(f"La longueur de la cle est dans l'ensemble {Kasiki} d'apres Kasiki")
-    for i in Kasiki:
+trouver = False
+for i in Kasiki:
+    if len(cle) == i:
+        trouver = True
+        print(f"La longueur de la cle est {i} d'apres Kasiki")
         cle_potentiel = trouverCle(crypter, i)
         print(f"Pour la longueur {i} la cle serait {cle_potentiel}\nLe message originel serait donc {vigenere(crypter, cle_potentiel, mode='decryptage')}\n")
-else:
-    print("Kasiki n'a pas réussi a trouver la taille de la cle")
 
+if not trouver:
+    print("Kasiki n'a pas réussi a trouver la taille de la cle\n")
+time.sleep(2)
 Friedman = friedman(crypter)
 if len(cle) == Friedman:
     cle_potentiel = trouverCle(crypter, Friedman)
     print(f"La longueur de la cle est {Friedman} d'apres Friedman et sa valeur serait {cle_potentiel}\nLe message originel serait donc {vigenere(crypter, cle_potentiel, mode='decryptage')}\n")
 else:
-    print("Friedman n'a pas réussi a trouver la taille de la cle")
+    print("Friedman n'a pas réussi a trouver la taille de la cle\n")
 
-print(f"D'après la méthode de Bazeries : \nLes clés possibles trouvées sont : {bazeries_boucle(crypter, 'montagne')}")
+time.sleep(2)
+Bazeries = bazeries_boucle(crypter, 'montagne')
+cles_possibles = [mot for mot in Bazeries if len(mot) == len(cle)]
+print(f"D'après la méthode de Bazeries : \nLes clés possibles trouvées sont : {cles_possibles}")
